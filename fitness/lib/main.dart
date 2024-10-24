@@ -1,30 +1,31 @@
-import 'package:fitness/utils/Preferences.dart';
 import 'package:flutter/material.dart';
+// import 'package:workout_fitness/view/login/on_boarding_view.dart';
+import 'package:workout_fitness/view/menu/menu_view.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Preferences.init();
+import 'common/color_extension.dart';
+
+void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = Preferences.getEmail() != null;
-
     return MaterialApp(
+      title: 'Workout Fitness',
       debugShowCheckedModeBanner: false,
-      title: 'Fitness',
       theme: ThemeData(
-        textTheme:
-        TextTheme(bodyText1: TextStyle(color: ColorConstants.textColor)),
-        fontFamily: 'NotoSansKR',
-        scaffoldBackgroundColor: Colors.white,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: "Quicksand",
+        colorScheme: ColorScheme.fromSeed(seedColor: TColor.primary),
+        useMaterial3: false,
       ),
-      home: isLoggedIn ? TabBarPage() : OnboardingPage(),
+      home: const MenuView(),
     );
   }
 }
+
+
