@@ -78,7 +78,7 @@ class _MenuViewState extends State<MenuView> {
     {"name": "Exercises", "image": "assets/img/menu_exercises.png", "tag": "8"},
     {"name": "Tips", "image": "assets/img/menu_tips.png", "tag": "9"},
     {"name": "Settings", "image": "assets/img/menu_settings.png", "tag": "10"},
-    {"name": "Support", "image": "assets/img/menu_support.png", "tag": "11"},
+    // {"name": "Support", "image": "assets/img/menu_support.png", "tag": "11"},
   ];
 
   @override
