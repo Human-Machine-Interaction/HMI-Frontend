@@ -17,24 +17,25 @@ class _OnBoardingViewState extends State<OnBoardingView> {
 
   List pageArr = [
     {
-      "title": "Have a good health",
+      "title": "Recover Your Health",
       "subtitle":
-          "Being healthy is all, no health is nothing.\nSo why do not we",
+      "Health is invaluable.\nLet's move forward through recovery together.",
       "image": "assets/img/on_board_1.png",
     },
     {
-      "title": "Be stronger",
+      "title": "Build Your Strength",
       "subtitle":
-          "Take 30 minutes of bodybuilding every day\nto get physically fit and healthy.",
+      "Engage in gentle exercises daily to improve strength and endurance.",
       "image": "assets/img/on_board_2.png",
     },
     {
-      "title": "Have nice body",
+      "title": "Regain Confidence",
       "subtitle":
-          "Bad body shape, poor sleep, lack of strength,\nweight gain, weak bones, easily traumatized\n body, depressed, stressed, poor metabolism,\n poor resistance",
+      "A healthy body, restful sleep, improved resilience, and a positive mindset.",
       "image": "assets/img/on_board_3.png",
     }
   ];
+
 
   @override
   void initState() {

@@ -45,7 +45,7 @@ class _Step2ViewState extends State<Step2View> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Text(
-                  "Select your fitness level",
+                  "Select Your Recovery Level",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: TColor.secondaryText,
@@ -54,8 +54,8 @@ class _Step2ViewState extends State<Step2View> {
                 ),
               ),
               FitnessLevelSelector(
-                title: "Beginer",
-                subtitle: "You are new to fitness training",
+                title: "Early Stage",
+                subtitle: "Starting with gentle movements for healing",
                 isSelect: selectIndex == 0,
                 onPressed: () {
                   setState(() {
@@ -64,8 +64,8 @@ class _Step2ViewState extends State<Step2View> {
                 },
               ),
               FitnessLevelSelector(
-                title: "Intermediate",
-                subtitle: "You have been training regularly",
+                title: "Progressing",
+                subtitle: "Increasing strength and mobility gradually",
                 isSelect: selectIndex == 1,
                 onPressed: () {
                   setState(() {
@@ -73,10 +73,9 @@ class _Step2ViewState extends State<Step2View> {
                   });
                 },
               ),
-
               FitnessLevelSelector(
-                title: "Advanced",
-                subtitle: "You're fit and ready for an intensive workout plan",
+                title: "Advanced Recovery",
+                subtitle: "Ready for more active rehabilitation exercises",
                 isSelect: selectIndex == 2,
                 onPressed: () {
                   setState(() {
@@ -84,8 +83,6 @@ class _Step2ViewState extends State<Step2View> {
                   });
                 },
               ),
-              
-              
               const Spacer(),
               Padding(
                 padding:
@@ -93,7 +90,10 @@ class _Step2ViewState extends State<Step2View> {
                 child: RoundButton(
                   title: "Next",
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Step3View() ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Step3View()));
                   },
                 ),
               ),

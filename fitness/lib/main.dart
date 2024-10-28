@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_fitness/view/login/on_boarding_view.dart';
 // import 'package:workout_fitness/view/login/on_boarding_view.dart';
 import 'package:workout_fitness/view/menu/menu_view.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: TColor.primary),
         useMaterial3: false,
       ),
-      home: const MenuView(),
+      home: const OnBoardingView(),
     );
   }
 }

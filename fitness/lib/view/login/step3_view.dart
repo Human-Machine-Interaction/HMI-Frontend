@@ -19,33 +19,34 @@ class _Step3ViewState extends State<Step3View> {
   DateTime? selectDate;
   String? selectHeight;
   String? selectWeight;
+  String? userName;
   bool isMale = true;
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: TColor.white,
-          centerTitle: true,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Image.asset(
-                "assets/img/back.png",
-                width: 25,
-                height: 25,
-              )),
-          title: Text(
-            "Step 3 of 3",
-            style: TextStyle(
-                color: TColor.primary,
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
+      appBar: AppBar(
+        backgroundColor: TColor.white,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Image.asset(
+            "assets/img/back.png",
+            width: 25,
+            height: 25,
           ),
         ),
-        body: SafeArea(
+        title: Text(
+          "Step 3 of 3",
+          style: TextStyle(
+              color: TColor.primary, fontSize: 20, fontWeight: FontWeight.w700),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
@@ -62,7 +63,7 @@ class _Step3ViewState extends State<Step3View> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Text(
-                  "Let us know about you to speed up the result, Get fit with your personal workout plan!",
+                  "Let us know about you to speed up the result, Get fit with your personal plan!",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: TColor.secondaryText, fontSize: 16),
                 ),
@@ -74,41 +75,27 @@ class _Step3ViewState extends State<Step3View> {
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Apple Health",
-                                style: TextStyle(
-                                    color: TColor.secondaryText,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Text(
-                                "Allow access ti fill my parameters",
-                                style: TextStyle(
-                                    color: TColor.secondaryText, fontSize: 16),
-                              ),
-                            ],
+                    SizedBox(height: media.width * 0.05),
+                    Divider(color: TColor.divider, height: 1),
+                    // Username input
+                    Padding(
+                      padding:
+                      EdgeInsets.symmetric(vertical: media.width * 0.05),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: "Username",
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: TColor.primary),
                           ),
                         ),
-                        CupertinoSwitch(
-                            activeColor: TColor.primary,
-                            value: isAppleHealth,
-                            onChanged: (newVal) {
-                              setState(() {
-                                isAppleHealth = isAppleHealth;
-                              });
-                            })
-                      ],
+                        onChanged: (value) {
+                          setState(() {
+                            userName = value;
+                          });
+                        },
+                      ),
                     ),
-                    SizedBox(height: media.width * 0.05),
                     Divider(color: TColor.divider, height: 1),
                     SelectDateTime(
                       title: "Birthday",
@@ -121,21 +108,7 @@ class _Step3ViewState extends State<Step3View> {
                     ),
                     Divider(color: TColor.divider, height: 1),
                     SelectPicker(
-                      allVal: const [
-                        "160 cm",
-                        "161 cm",
-                        "162 cm",
-                        "163 cm",
-                        "164 cm",
-                        "165 cm",
-                        "166 cm",
-                        "167 cm",
-                        "168 cm",
-                        "169 cm",
-                        "170 cm",
-                        "171 cm",
-                        "172 cm"
-                      ],
+                      allVal: List.generate(31, (index) => "${150 + index} cm"),
                       selectVal: selectHeight,
                       title: "Height",
                       didChange: (newVal) {
@@ -146,17 +119,7 @@ class _Step3ViewState extends State<Step3View> {
                     ),
                     Divider(color: TColor.divider, height: 1),
                     SelectPicker(
-                      allVal: const [
-                        "50 kg",
-                        "51 Kg",
-                        "52 kg",
-                        "53 kg",
-                        "54 kg",
-                        "55 kg",
-                        "56 kg",
-                        "57 kg",
-                        "58 kg",
-                      ],
+                      allVal: List.generate(61, (index) => "${40 + index} kg"),
                       selectVal: selectWeight,
                       title: "Weight",
                       didChange: (newVal) {
@@ -168,7 +131,7 @@ class _Step3ViewState extends State<Step3View> {
                     Divider(color: TColor.divider, height: 1),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(vertical: media.width * 0.05),
+                      EdgeInsets.symmetric(vertical: media.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -179,37 +142,41 @@ class _Step3ViewState extends State<Step3View> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700),
                           ),
-                          
                           CupertinoSegmentedControl(
-                              groupValue: isMale,
-                              selectedColor: TColor.primary,
-                              unselectedColor: TColor.white,
-                              borderColor: TColor.primary,
-                              children: const {
-                                true: Text(" Male ",
-                                    style: TextStyle(fontSize: 18)),
-                                false: Text(" Female ",
-                                    style: TextStyle(fontSize: 18))
-                              },
-                              onValueChanged: (isMaleVal) {
-                                setState(() {
-                                  isMale = isMaleVal;
-                                });
-                              }, padding: EdgeInsets.zero, )
+                            groupValue: isMale,
+                            selectedColor: TColor.primary,
+                            unselectedColor: TColor.white,
+                            borderColor: TColor.primary,
+                            children: const {
+                              true: Text(" Male ", style: TextStyle(fontSize: 18)),
+                              false: Text(" Female ", style: TextStyle(fontSize: 18))
+                            },
+                            onValueChanged: (isMaleVal) {
+                              setState(() {
+                                isMale = isMaleVal;
+                              });
+                            },
+                            padding: EdgeInsets.zero,
+                          )
                         ],
                       ),
                     )
                   ],
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 30),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
                 child: RoundButton(
                   title: "Start",
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const MenuView() ) , (route) => false);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MenuView(),
+                      ),
+                          (route) => false,
+                    );
                   },
                 ),
               ),
@@ -221,18 +188,19 @@ class _Step3ViewState extends State<Step3View> {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                        color: 3 == pObj
-                            ? TColor.primary
-                            : TColor.gray.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(6)),
+                      color: 3 == pObj
+                          ? TColor.primary
+                          : TColor.gray.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   );
                 }).toList(),
               ),
-              const SizedBox(
-                height: 15,
-              )
+              const SizedBox(height: 15),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

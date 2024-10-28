@@ -46,7 +46,7 @@ class _Step1ViewState extends State<Step1View> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30),
             child: Text(
-              "Welcome to\nCapi Fitness Application",
+              "Welcome to\nFun Healing",
               textAlign:  TextAlign.center,
               style: TextStyle(
                   color: TColor.secondaryText,
@@ -56,7 +56,7 @@ class _Step1ViewState extends State<Step1View> {
           ),
 
            Text(
-            "Personalized workouts will help you\ngain strength, get in better shape and\nembrace a healthy lifestyle",
+            "Personalized recovery exercises will help you\nregain strength, improve mobility, and\nreturn to a healthy, active lifestyle.",
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: TColor.secondaryText,
