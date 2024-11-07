@@ -84,44 +84,20 @@ class _ExerciseViewState extends State<ExerciseView> {
             child: Row(
               children: [
                 Expanded(
-                  child: TabButton(title: "Full Body", isActive: isActiveTab == 0, onPressed: (){
+                  child: TabButton(title: "Knee", isActive: isActiveTab == 0, onPressed: (){
                     setState(() {
                       isActiveTab = 0;
                     });
                   }, ),
                 ),
                  Expanded(
-                  child: TabButton(title: "Foot", isActive: isActiveTab == 1, onPressed: (){
+                  child: TabButton(title: "Back", isActive: isActiveTab == 1, onPressed: (){
                     setState(() {
                       isActiveTab = 1;
                     });
                   }, ),
                 ),
-          
-                Expanded(
-                  child: TabButton(
-                    title: "Arm",
-                    isActive: isActiveTab == 2,
-                    onPressed: () {
-                      setState(() {
-                        isActiveTab = 2;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: TabButton(
-                    title: "Body",
-                    isActive: isActiveTab == 3,
-                    onPressed: () {
-                      setState(() {
-                        isActiveTab = 3;
-                      });
-                    },
-                  ),
-                ),
-               
-                
+
               ],
             ),
           ),
