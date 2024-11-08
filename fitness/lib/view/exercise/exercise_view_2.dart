@@ -103,7 +103,7 @@ class _ExerciseView2State extends State<ExerciseView2> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    const WorkoutDetailView()));
+                                    WorkoutDetailView(workoutData: wObj)));
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 15),
@@ -147,7 +147,7 @@ class _ExerciseView2State extends State<ExerciseView2> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const WorkoutDetailView()));
+                                                    WorkoutDetailView(workoutData: wObj)));
                                       },
                                       icon: Image.asset("assets/img/more.png",
                                           width: 20, height: 20))

@@ -209,7 +209,7 @@ class _MealPlanViewState extends State<MealPlanView> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const WorkoutDetailView()));
+                                                      WorkoutDetailView(workoutData: wObj)));
                                         },
                                       )),
                                 ],
