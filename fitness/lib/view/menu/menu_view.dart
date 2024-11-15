@@ -133,7 +133,7 @@ class _MenuViewState extends State<MenuView> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text("Fun Healing",
+                              Text("Pain Free",
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: TColor.white,

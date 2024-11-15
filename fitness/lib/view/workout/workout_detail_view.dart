@@ -6,6 +6,7 @@ import '../../common_widget/response_row.dart';
 
 class WorkoutDetailView extends StatefulWidget {
   final Map workoutData;
+
   const WorkoutDetailView({super.key, required this.workoutData});
 
   @override
@@ -14,14 +15,12 @@ class WorkoutDetailView extends StatefulWidget {
 
 class _WorkoutDetailViewState extends State<WorkoutDetailView> {
   List workArr = [
-    {"name": "Running", "image": "assets/img/1.png"},
-    {"name": "Jumping", "image": "assets/img/2.png"},
+    {"image": "assets/img/1.png"},
+    {"image": "assets/img/2.png"},
     {
-      "name": "Running",
       "image": "assets/img/5.png",
     },
     {
-      "name": "Jumping",
       "image": "assets/img/3.png",
     },
   ];
@@ -48,17 +47,6 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
           style: TextStyle(
               color: TColor.white, fontSize: 20, fontWeight: FontWeight.w700),
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Image.asset(
-                "assets/img/node_music.png",
-                width: 25,
-                height: 25,
-              ))
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -70,7 +58,6 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
               height: media.width * 0.55,
               fit: BoxFit.cover,
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               child: Text(
@@ -113,23 +100,57 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                               ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 0),
-                            child: Text(
-                              wObj["name"],
-                              style: TextStyle(
-                                  color: TColor.secondaryText,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                          ),
                         ],
                       ),
                     );
                   }),
             ),
-
+            // Thêm phần mô tả bài tập
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              child: Text(
+                "Mô tả bài tập",
+                style: TextStyle(
+                    color: TColor.secondaryText,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Đây là phần mô tả chi tiết về bài tập, hướng dẫn thực hiện và các lưu ý quan trọng khi tập luyện. Bạn có thể thay đổi nội dung này theo yêu cầu của mình.",
+                style: TextStyle(
+                    color: TColor.secondaryText,
+                    fontSize: 14,
+                    height: 1.5),
+              ),
+            ),
+            // Thêm nút Start
+            Container(
+              width: double.maxFinite,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Xử lý khi nhấn nút Start
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF77e517), // Màu theo yêu cầu
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25), // Bo góc nút
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text(
+                  "Start",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
