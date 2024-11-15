@@ -15,15 +15,15 @@ class _ExerciseView2State extends State<ExerciseView2> {
   int isActiveTab = 0;
 
   List kneeWorkouts = [
-    {"name": "Straight Leg Raises", "image": "assets/img/1.png"},
-    {"name": "Heel Slides", "image": "assets/img/2.png"},
-    {"name": "Wall Sits", "image": "assets/img/3.png"},
+    {"name": "Straight Leg Raises", "image": "assets/img/1.png", "video": "assets/video/StraightLegRaise.mp4", "description": "A fundamental rehabilitation exercise that targets the quadriceps muscles without putting stress on the knee joint. This exercise is particularly effective in the early stages of recovery as it helps maintain muscle strength while protecting the knee. The controlled lifting motion helps rebuild muscle memory and stability, making it essential for patients recovering from knee surgery or injury."},
+    {"name": "Heel Slides", "image": "assets/img/2.png", "video": "assets/video/CoreExerciseHeelSlide.mp4", "description": "A gentle yet effective exercise that focuses on regaining knee mobility and flexibility. It's one of the safest ways to begin restoring range of motion after knee surgery or injury. The sliding motion helps maintain the natural movement patterns of the knee while minimizing stress on the joint, making it an excellent starting point for rehabilitation."},
+    {"name": "Wall Sits", "image": "assets/img/3.png", "video": "assets/video/SitExercise.mp4", "description": "A functional strengthening exercise that builds endurance in the muscles supporting the knee. This exercise mimics common daily activities like sitting and standing, making it particularly valuable for returning to normal activities. It's an excellent progression exercise once basic strength and stability have been established."},
   ];
 
   List backWorkouts = [
-    {"name": "Bird Dog", "image": "assets/img/4.png"},
-    {"name": "Pull-Up", "image": "assets/img/5.png"},
-    {"name": "Back Bridge", "image": "assets/img/6.png"},
+    {"name": "Bird Dog", "image": "assets/img/4.png", "video": "assets/video/DogBird.mp4", "description": "A stabilization exercise that enhances core strength and spinal balance while training coordination. Named for its resemblance to a hunting dog's pointing stance, this exercise simultaneously works the back and abdominal muscles. It's particularly effective for developing core stability and improving posture, making it valuable for both rehabilitation and injury prevention."},
+    {"name": "Pelvic Tilts", "image": "assets/img/5.png", "video": "assets/video/PelvicTilts.mp4", "description": "A gentle, foundational exercise that focuses on developing awareness and control of the pelvis and lower back position. This movement helps reconnect the brain with core muscles that may have become inhibited due to pain or injury. It's often used as a starting point in back rehabilitation programs due to its subtle yet effective nature."},
+    {"name": "Back Bridge", "image": "assets/img/6.png", "video": "assets/video/CoreExerciseBridge.mp4", "description": "A fundamental strength exercise that targets multiple muscle groups in the posterior chain. This exercise strengthens the entire back side of the body while being gentle on the spine. It's particularly effective for developing gluteal strength and improving the stability of the lower back, making it valuable for both rehabilitation and general fitness."},
   ];
 
   List get currentWorkouts => isActiveTab == 0 ? kneeWorkouts : backWorkouts;

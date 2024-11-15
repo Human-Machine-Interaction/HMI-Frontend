@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'package:workout_fitness/view/do_exercise/do_exercise_view.dart';
 import '../../common/color_extension.dart';
-import '../../common_widget/response_row.dart';
+
 
 class WorkoutDetailView extends StatefulWidget {
   final Map workoutData;
@@ -17,13 +18,57 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
   List workArr = [
     {"image": "assets/img/1.png"},
     {"image": "assets/img/2.png"},
-    {
-      "image": "assets/img/5.png",
-    },
-    {
-      "image": "assets/img/3.png",
-    },
+    {"image": "assets/img/5.png"},
+    {"image": "assets/img/3.png"},
   ];
+
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
+  bool _isVideoInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  Future<void> _initializeVideo() async {
+    _videoPlayerController = VideoPlayerController.asset(
+      widget.workoutData['video'],
+    );
+
+    await _videoPlayerController.initialize();
+
+    _chewieController = ChewieController(
+      videoPlayerController: _videoPlayerController,
+      aspectRatio: _videoPlayerController.value.aspectRatio,
+      autoPlay: false,
+      looping: true,
+      placeholder: Container(
+        color: Colors.black,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      materialProgressColors: ChewieProgressColors(
+        playedColor: TColor.primary,
+        handleColor: TColor.primary,
+        backgroundColor: Colors.grey,
+        bufferedColor: Colors.grey[200]!,
+      ),
+    );
+
+    setState(() {
+      _isVideoInitialized = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,110 +79,128 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
         centerTitle: true,
         elevation: 0.1,
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Image.asset(
-              "assets/img/black_white.png",
-              width: 25,
-              height: 25,
-            )),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Image.asset(
+            "assets/img/black_white.png",
+            width: 25,
+            height: 25,
+          ),
+        ),
         title: Text(
           widget.workoutData['name'],
           style: TextStyle(
-              color: TColor.white, fontSize: 20, fontWeight: FontWeight.w700),
+            color: TColor.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              widget.workoutData['image'],
+            SizedBox(
               width: media.width,
               height: media.width * 0.55,
-              fit: BoxFit.cover,
+              child: _isVideoInitialized && _chewieController != null
+                  ? Chewie(controller: _chewieController!)
+                  : const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               child: Text(
                 "Steps",
                 style: TextStyle(
-                    color: TColor.secondaryText,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700),
+                  color: TColor.secondaryText,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             SizedBox(
               height: media.width * 0.26,
               child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  itemCount: workArr.length,
-                  itemBuilder: (context, index) {
-                    var wObj = workArr[index] as Map? ?? {};
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 8),
-                      width: media.width * 0.28,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.asset(
-                                wObj["image"].toString(),
-                                width: media.width,
-                                height: media.width * 0.15,
-                                fit: BoxFit.cover,
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                itemCount: workArr.length,
+                itemBuilder: (context, index) {
+                  var wObj = workArr[index] as Map? ?? {};
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    width: media.width * 0.28,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Image.asset(
+                              wObj["image"].toString(),
+                              width: media.width,
+                              height: media.width * 0.15,
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              width: media.width,
+                              height: media.width * 0.15,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.5),
                               ),
-                              Container(
-                                width: media.width,
-                                height: media.width * 0.15,
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.5)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-            // Thêm phần mô tả bài tập
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               child: Text(
-                "Mô tả bài tập",
+                "Exercise Description",
                 style: TextStyle(
-                    color: TColor.secondaryText,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700),
+                  color: TColor.secondaryText,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Đây là phần mô tả chi tiết về bài tập, hướng dẫn thực hiện và các lưu ý quan trọng khi tập luyện. Bạn có thể thay đổi nội dung này theo yêu cầu của mình.",
+                widget.workoutData['description'] ?? "No description available.",
                 style: TextStyle(
-                    color: TColor.secondaryText,
-                    fontSize: 14,
-                    height: 1.5),
+                  color: TColor.secondaryText,
+                  fontSize: 14,
+                  height: 1.5,
+                ),
               ),
             ),
-            // Thêm nút Start
+            // Modify the ElevatedButton onPressed in WorkoutDetailView:
             Container(
               width: double.maxFinite,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
               child: ElevatedButton(
                 onPressed: () {
-                  // Xử lý khi nhấn nút Start
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DoExerciseView(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF77e517), // Màu theo yêu cầu
+                  backgroundColor: const Color(0xFF77e517),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25), // Bo góc nút
+                    borderRadius: BorderRadius.circular(25),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),

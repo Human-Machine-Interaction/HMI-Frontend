@@ -16,7 +16,6 @@ import '../meal_plan/meal_plan_view_2.dart';
 import '../running/running_view.dart';
 import '../schedule/schedule_view.dart';
 import '../tips/tips_view.dart';
-import '../weight/weight_view.dart';
 
 class MenuView extends StatefulWidget {
   const MenuView({super.key});
@@ -176,12 +175,6 @@ class _MenuViewState extends State<MenuView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const HomeView()));
-                    break;
-                  case "2":
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const WeightView()));
                     break;
                   case "3":
                     Scaffold.of(context).openDrawer();
