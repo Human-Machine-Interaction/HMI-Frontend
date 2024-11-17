@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/services.dart';
+import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
+import 'package:workout_fitness/common/pose_painter.dart';
 
 class DoExerciseView extends StatefulWidget {
   const DoExerciseView({super.key});
@@ -10,37 +13,30 @@ class DoExerciseView extends StatefulWidget {
 
 class _DoExerciseViewState extends State {
   CameraController? controller;
-  List<CameraDescription> cameras = [];
+  final poseDetector = PoseDetector(options: PoseDetectorOptions(
+    mode: PoseDetectionMode.stream,
+    model: PoseDetectionModel.accurate
+  ));
+  bool _isProcessing = false;
+  Pose? _pose;
+
+  final _orientations = {
+    DeviceOrientation.portraitUp: 0,
+    DeviceOrientation.landscapeLeft: 90,
+    DeviceOrientation.portraitDown: 180,
+    DeviceOrientation.landscapeRight: 270,
+  };
 
   @override
   void initState() {
     super.initState();
-    initCamera();
-  }
-
-  Future initCamera() async {
-    try {
-      cameras = await availableCameras();
-      if (cameras.isEmpty) return;
-
-      controller = CameraController(
-        cameras[0],
-        ResolutionPreset.max,  // Sử dụng độ phân giải tối đa
-        enableAudio: false,
-      );
-
-      await controller!.initialize();
-
-      if (mounted) {
-        setState(() {});
-      }
-    } on CameraException catch (e) {
-      _showCameraException(e);
-    }
+    _initCamera();
   }
 
   @override
   void dispose() {
+    poseDetector.close();
+    controller?.stopImageStream();
     controller?.dispose();
     super.dispose();
   }
@@ -48,9 +44,7 @@ class _DoExerciseViewState extends State {
   @override
   Widget build(BuildContext context) {
     if (controller == null || !controller!.value.isInitialized) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -59,66 +53,93 @@ class _DoExerciseViewState extends State {
         backgroundColor: Colors.black.withOpacity(0.5),
       ),
       body: Stack(
-        children: [
-          Transform.scale(
-            scale: 2 / controller!.value.aspectRatio,
-            child: Center(
-              child: CameraPreview(controller!),
+          children: [
+            Transform.scale(
+              scale: 2 / controller!.value.aspectRatio,
+              child: Center(child: CameraPreview(controller!)),
             ),
-          ),
-          Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.switch_camera, color: Colors.white, size: 30),
-                    onPressed: cameras.length > 1
-                        ? () {
-                      onNewCameraSelected(
-                        cameras[controller!.description == cameras[0] ? 1 : 0],
-                      );
-                    }
-                        : null,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+            if (_pose != null) CustomPaint(
+                painter: PosePainter(
+                  pose: _pose!,
+                  imageSize: _getImageSize(),
+                  screenSize: MediaQuery.of(context).size,
+                )
+            )
+          ]
       ),
     );
   }
 
-  Future onNewCameraSelected(CameraDescription cameraDescription) async {
-    if (controller != null) {
-      await controller!.dispose();
-    }
-
-    controller = CameraController(
-      cameraDescription,
-      ResolutionPreset.max,  // Sử dụng độ phân giải tối đa
-      enableAudio: false,
-    );
-
+  Future _initCamera() async {
     try {
-      await controller!.initialize();
-    } on CameraException catch (e) {
-      _showCameraException(e);
-    }
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) throw Exception('No cameras found');
 
-    if (mounted) {
-      setState(() {});
+      controller = CameraController(
+        cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front),
+        ResolutionPreset.medium,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.nv21
+      );
+
+      await controller!.initialize();
+      await controller!.startImageStream(_processImage);
+
+      if (mounted) setState(() {});
+
+    } catch (e) {
+      _showError(e);
     }
   }
 
-  void _showCameraException(CameraException e) {
+  Future<void> _processImage(CameraImage image) async {
+    if (_isProcessing) return;
+
+    _isProcessing = true;
+    try {
+      final WriteBuffer allBytes = WriteBuffer();
+      for (Plane plane in image.planes) {
+        allBytes.putUint8List(plane.bytes);
+      }
+
+      final inputImage = InputImage.fromBytes(
+        bytes: allBytes.done().buffer.asUint8List(),
+        metadata: InputImageMetadata(
+          size: Size(image.width.toDouble(), image.height.toDouble()),
+          rotation: _getImageRotation(),
+          format: InputImageFormat.nv21,
+          bytesPerRow: image.planes.first.bytesPerRow,
+        ),
+      );
+
+      final poses = await poseDetector.processImage(inputImage);
+      if (poses.isNotEmpty && mounted) setState(() => _pose = poses.first);
+
+    } catch (e) {
+      _showError(e);
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  Size _getImageSize() {
+    final Size(:width, :height) = controller!.value.previewSize!;
+    final isLandscape =
+        controller!.value.deviceOrientation == DeviceOrientation.landscapeLeft
+        || controller!.value.deviceOrientation == DeviceOrientation.landscapeRight;
+
+    return isLandscape ? Size(width, height) : Size(height, width);
+  }
+
+  InputImageRotation _getImageRotation() {
+    final sensorOrientation = controller!.description.sensorOrientation;
+    final rotationCompensation = _orientations[controller!.value.deviceOrientation]!;
+    return InputImageRotationValue.fromRawValue((sensorOrientation + rotationCompensation) % 360)!;
+  }
+
+  void _showError(dynamic e) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.code}\n${e.description}')),
+      SnackBar(content: Text('Error: $e')),
     );
   }
 }
