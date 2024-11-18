@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
-import 'package:workout_fitness/common/pose_painter.dart';
+import 'package:workout_fitness/mediapipe/painter.dart';
 
 class DoExerciseView extends StatefulWidget {
   const DoExerciseView({super.key});
@@ -19,7 +19,6 @@ class _DoExerciseViewState extends State {
   ));
   bool _isProcessing = false;
   Pose? _pose;
-
   final _orientations = {
     DeviceOrientation.portraitUp: 0,
     DeviceOrientation.landscapeLeft: 90,
@@ -113,7 +112,7 @@ class _DoExerciseViewState extends State {
       );
 
       final poses = await poseDetector.processImage(inputImage);
-      if (poses.isNotEmpty && mounted) setState(() => _pose = poses.first);
+      if (mounted) setState(() => _pose = poses.isNotEmpty ? poses.first : null);
 
     } catch (e) {
       _showError(e);
