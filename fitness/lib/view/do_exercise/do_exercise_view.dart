@@ -3,15 +3,18 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 import 'package:workout_fitness/mediapipe/painter.dart';
+import 'package:workout_fitness/mediapipe/exercise.dart';
+
 
 class DoExerciseView extends StatefulWidget {
-  const DoExerciseView({super.key});
+  final Exercise exercise;
+  const DoExerciseView({super.key, required this.exercise});
 
   @override
   State createState() => _DoExerciseViewState();
 }
 
-class _DoExerciseViewState extends State {
+class _DoExerciseViewState extends State<DoExerciseView> {
   CameraController? controller;
   final poseDetector = PoseDetector(options: PoseDetectorOptions(
     mode: PoseDetectionMode.stream,
@@ -19,6 +22,7 @@ class _DoExerciseViewState extends State {
   ));
   bool _isProcessing = false;
   Pose? _pose;
+  String _feedback = 'No pose detected!';
   final _orientations = {
     DeviceOrientation.portraitUp: 0,
     DeviceOrientation.landscapeLeft: 90,
@@ -48,23 +52,41 @@ class _DoExerciseViewState extends State {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Exercise Camera'),
+        title: Text('${widget.exercise.name} - ${widget.exercise.currentReps}/${widget.exercise.requiredReps} Reps'),
         backgroundColor: Colors.black.withOpacity(0.5),
       ),
       body: Stack(
-          children: [
-            Transform.scale(
-              scale: 2 / controller!.value.aspectRatio,
-              child: Center(child: CameraPreview(controller!)),
+        children: [
+          Transform.scale(
+            scale: 2 / controller!.value.aspectRatio,
+            child: Center(child: CameraPreview(controller!)),
+          ),
+          if (_pose != null) CustomPaint(
+              painter: PosePainter(
+                pose: _pose!,
+                imageSize: _getImageSize(),
+                screenSize: MediaQuery.of(context).size,
+                color: _feedback == 'Hold still...' || widget.exercise.isCompleted ? Colors.green : Colors.red
+              )
+          ),
+          Positioned(
+            bottom: 50,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black87,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                _feedback,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
             ),
-            if (_pose != null) CustomPaint(
-                painter: PosePainter(
-                  pose: _pose!,
-                  imageSize: _getImageSize(),
-                  screenSize: MediaQuery.of(context).size,
-                )
-            )
-          ]
+          ),
+        ]
       ),
     );
   }
@@ -112,8 +134,22 @@ class _DoExerciseViewState extends State {
       );
 
       final poses = await poseDetector.processImage(inputImage);
-      if (mounted) setState(() => _pose = poses.isNotEmpty ? poses.first : null);
-
+      if (poses.isNotEmpty) {
+        final feedback = widget.exercise.isCompleted
+          ? 'Exercise Completed!'
+          : widget.exercise.checkProgress(poses.first);
+        if (mounted) {
+          setState(() {
+            _pose = poses.first;
+            _feedback = feedback ?? 'Hold still...';
+          });
+        }
+      } else if (mounted) {
+        setState(() {
+          _pose = null;
+          _feedback = 'No pose detected!';
+        });
+      }
     } catch (e) {
       _showError(e);
     } finally {

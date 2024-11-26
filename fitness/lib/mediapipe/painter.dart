@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
+
 class PosePainter extends CustomPainter {
   final Pose pose;
   final Size imageSize;
   final Size screenSize;
+  final Color color;
 
   PosePainter({
     required this.pose,
     required this.imageSize,
     required this.screenSize,
+    required this.color
   });
 
   @override
@@ -17,7 +20,7 @@ class PosePainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
-      ..color = Colors.green;
+      ..color = color;
 
     pose.landmarks.forEach((key, point) {
       final scaledPoint = Offset(
