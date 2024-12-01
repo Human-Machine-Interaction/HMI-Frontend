@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workout_fitness/view/workout/workout_detail_view.dart';
+import 'package:workout_fitness/data/services/Preferences.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/tab_button.dart';
@@ -13,20 +13,132 @@ class MealPlanView2 extends StatefulWidget {
 
 class _MealPlanView2State extends State<MealPlanView2> {
   int isActiveTab = 0;
-  List workArr = [
-    {"name": "Breafast", "title":"vegetable, Sandwich", "image": "assets/img/f1.png"},
-    {"name": "Snack", "title": "Boat, nut, butter", "image": "assets/img/f2.png"},
+  List recommendedMeals = [];
+
+  // Danh sách các loại thực phẩm phù hợp với từng chấn thương
+  List dietaryRecommendations = [
+    // Chế độ ăn cho chấn thương đầu gối
     {
-      "name": "Breafast",
-      "title": "vegetable, Sandwich",
-      "image": "assets/img/f3.png",
+      'injury_type': 'knee',
+      'meals': [
+        {
+          "name": "Anti-Inflammatory Breakfast",
+          "title": "Salmon, Spinach, Turmeric Smoothie",
+          "image": "assets/img/f1.png",
+          "benefits": "Reduces inflammation, supports joint health"
+        },
+        {
+          "name": "Joint Recovery Snack",
+          "title": "Chia Seeds, Berries, Almond Milk",
+          "image": "assets/img/f2.png",
+          "benefits": "High in omega-3, supports bone strength"
+        },
+        {
+          "name": "Protein-Rich Lunch",
+          "title": "Grilled Chicken, Quinoa, Roasted Vegetables",
+          "image": "assets/img/f3.png",
+          "benefits": "Muscle recovery, low inflammation"
+        }
+      ]
     },
+    // Chế độ ăn cho chấn thương lưng
     {
-      "name": "Snack",
-       "title": "Boat, nut, butter",
-      "image": "assets/img/f4.png",
-    },
+      'injury_type': 'back',
+      'meals': [
+        {
+          "name": "Back Health Breakfast",
+          "title": "Eggs, Avocado, Whole Grain Toast",
+          "image": "assets/img/f1.png",
+          "benefits": "Supports muscle repair, reduces inflammation"
+        },
+        {
+          "name": "Spine Support Snack",
+          "title": "Walnuts, Yogurt, Honey",
+          "image": "assets/img/f2.png",
+          "benefits": "Calcium-rich, supports bone health"
+        },
+        {
+          "name": "Recovery Dinner",
+          "title": "Salmon, Sweet Potato, Broccoli",
+          "image": "assets/img/f4.png",
+          "benefits": "Omega-3, antioxidants for healing"
+        }
+      ]
+    }
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPersonalizedMealPlan();
+  }
+
+  void _loadPersonalizedMealPlan() {
+    // Lấy thông tin người dùng
+    final userInfo = Preferences.getUserInfo();
+
+    // Trích xuất thông tin liên quan
+    final injuryStatus = userInfo['injuryStatus'] ?? 0;
+    final injuries = userInfo['injuries'] ?? [];
+
+    print("Injury Status: $injuryStatus");
+    print("Injuries: $injuries");
+
+    // Khởi tạo danh sách các bữa ăn được đề xuất
+    List recommendations = [];
+
+    // Gợi ý dựa trên loại chấn thương
+    if (injuries != null && injuries.isNotEmpty) {
+      for (var injury in injuries) {
+        final matchingDiet = dietaryRecommendations.firstWhere(
+                (diet) => diet['injury_type'] == injury,
+            orElse: () => dietaryRecommendations[0]
+        );
+
+        // Lọc bữa ăn dựa trên mức độ chấn thương
+        recommendations = _filterMealsByInjuryStatus(matchingDiet['meals'], injuryStatus);
+
+        // Nếu tìm thấy bữa ăn, dừng vòng lặp
+        if (recommendations.isNotEmpty) break;
+      }
+    }
+
+    // Nếu không có bữa ăn nào được gợi ý, sử dụng mặc định
+    if (recommendations.isEmpty) {
+      recommendations = _getDefaultMeals(injuryStatus);
+    }
+
+    // Cập nhật state
+    setState(() {
+      recommendedMeals = recommendations;
+    });
+  }
+
+  List _filterMealsByInjuryStatus(List meals, int injuryStatus) {
+    switch (injuryStatus) {
+      case 0: // Không có chấn thương
+        return meals;
+      case 1: // Chấn thương nhẹ
+        return meals.take(2).toList(); // Chọn 2 bữa ăn đầu tiên
+      case 2: // Chấn thương nặng
+        return meals.take(1).toList(); // Chọn bữa ăn đầu tiên
+      default:
+        return meals;
+    }
+  }
+
+  List _getDefaultMeals(int injuryStatus) {
+    switch (injuryStatus) {
+      case 0:
+        return dietaryRecommendations[0]['meals'];
+      case 1:
+        return dietaryRecommendations[0]['meals'].take(2).toList();
+      case 2:
+        return dietaryRecommendations[0]['meals'].take(1).toList();
+      default:
+        return dietaryRecommendations[0]['meals'];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,31 +171,7 @@ class _MealPlanView2State extends State<MealPlanView2> {
           ]),
           child: Row(
             children: [
-              Expanded(
-               
-                child: TabButton2(
-                  title: "Water",
-                  isActive: isActiveTab == 0,
-                  onPressed: () {
-                    setState(() {
-                      isActiveTab = 0;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                
-                child: TabButton2(
-                  title: "Food",
-                  isActive: isActiveTab == 1,
-                  onPressed: () {
-                    setState(() {
-                      isActiveTab = 1;
-                    });
-                  },
-                ),
-              ),
-             
+
             ],
           ),
         ),
@@ -124,84 +212,50 @@ class _MealPlanView2State extends State<MealPlanView2> {
         Expanded(
           child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-              itemCount: workArr.length,
+              itemCount: recommendedMeals.length,
               itemBuilder: (context, index) {
-                var wObj = workArr[index] as Map? ?? {};
+                var mealObj = recommendedMeals[index] as Map? ?? {};
                 return Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(color: TColor.white),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                     
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.asset(
-                          wObj["image"].toString(),
+                          mealObj["image"].toString(),
                           width: media.width,
                           height: media.width * 0.55,
                           fit: BoxFit.cover,
                         ),
                       ),
-                          
-                       
-                       Text(
-                        wObj["name"],
+                      Text(
+                        mealObj["name"],
                         style: TextStyle(
                             color: TColor.secondaryText,
                             fontSize: 20,
                             fontWeight: FontWeight.w700),
                       ),
-
                       Text(
-                        wObj["title"],
+                        mealObj["title"],
                         style: TextStyle(
                             color: TColor.secondaryText,
                             fontSize: 14),
                       ),
-                      
+                      Text(
+                        "Benefits: ${mealObj["benefits"]}",
+                        style: TextStyle(
+                            color: TColor.secondaryText,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic),
+                      ),
                     ],
                   ),
                 );
               }),
         ),
       ]),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 1,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_running.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_meal_plan.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_home.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child: Image.asset("assets/img/menu_weight.png",
-                    width: 25, height: 25),
-              ),
-              InkWell(
-                onTap: () {},
-                child:
-                    Image.asset("assets/img/more.png", width: 25, height: 25),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

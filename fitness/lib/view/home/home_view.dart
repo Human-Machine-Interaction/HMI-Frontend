@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_fitness/common_widget/round_button.dart';
+import 'package:workout_fitness/data/services/Preferences.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/exercises_row.dart';
@@ -15,36 +16,163 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  List dataArr = [
-    {
-      "name": "Running",
-      "image": "assets/img/2.png",
-    },
-    {
-      "name": "Push-Up",
-      "image": "assets/img/3.png",
-    },
-    {
-      "name": "Leg Extension",
-      "image": "assets/img/5.png",
-    }
-  ];
+  List<Map<String, dynamic>> dataArr = [];
+  List<Map<String, dynamic>> trainingDayArr = [];
+  Map<String, dynamic> userInfo = {};
+  bool isLoading = true;
 
-  List trainingDayArr = [
-    {
-      "name": "Training Day 1",
-    },
-    {
-      "name": "Training Day 2",
-    },
-    {
-      "name": "Training Day 3",
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfoAndWorkoutPlans();
+  }
+
+  Future<void> _loadUserInfoAndWorkoutPlans() async {
+    // Retrieve user information
+    userInfo = Preferences.getUserInfo();
+
+    // Customize workout plans based on user's profile
+    setState(() {
+      dataArr = _generateWorkoutCategories();
+      trainingDayArr = _generateTrainingDays();
+      isLoading = false;
+    });
+  }
+
+  List<Map<String, dynamic>> _generateWorkoutCategories() {
+    // Customize workout categories based on user's injury status and physical condition
+    List<Map<String, dynamic>> categories = [
+      {
+        "name": "Low Impact",
+        "image": "assets/img/2.png",
+      },
+      {
+        "name": "Cardio",
+        "image": "assets/img/3.png",
+      },
+      {
+        "name": "Strength",
+        "image": "assets/img/5.png",
+      }
+    ];
+
+    // Filter out inappropriate exercises based on injury status
+    if (userInfo['injuryStatus'] != null) {
+      switch (userInfo['injuryStatus']) {
+        case 1: // Minor injury
+          categories = categories.where((cat) => cat['name'] != 'Strength').toList();
+          break;
+        case 2: // Moderate injury
+          categories = categories.where((cat) => cat['name'] == 'Low Impact').toList();
+          break;
+        case 3: // Serious injury
+          categories = []; // No exercise recommended
+          break;
+      }
     }
-  ];
+
+    return categories;
+  }
+
+  List<Map<String, dynamic>> _generateTrainingDays() {
+    // Customize training days based on user's age, weight, and injury status
+    List<Map<String, dynamic>> trainingPlans = [
+      {
+        "name": "Adaptive Workout 1",
+        "difficulty": _calculateWorkoutDifficulty(),
+        "exercises": _customizeExercises(1),
+      },
+      {
+        "name": "Adaptive Workout 2",
+        "difficulty": _calculateWorkoutDifficulty(),
+        "exercises": _customizeExercises(2),
+      },
+      {
+        "name": "Recovery Workout",
+        "difficulty": "Low",
+        "exercises": _customizeExercises(3),
+      }
+    ];
+
+    return trainingPlans;
+  }
+
+  String _calculateWorkoutDifficulty() {
+    // Calculate workout difficulty based on user's age and fitness level
+    if (userInfo['birthday'] == null) return "Moderate";
+
+    int age = _calculateAge(userInfo['birthday']);
+
+    if (age < 25) return "High";
+    if (age < 40) return "Moderate";
+    if (age < 55) return "Low";
+    return "Very Low";
+  }
+
+  int _calculateAge(DateTime birthday) {
+    DateTime now = DateTime.now();
+    int age = now.year - birthday.year;
+    if (now.month < birthday.month ||
+        (now.month == birthday.month && now.day < birthday.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  List<Map<String, dynamic>> _customizeExercises(int workoutDay) {
+    // Customize exercises based on user's injuries and physical condition
+    List<Map<String, dynamic>> baseExercises = [
+      {
+        "number": "1",
+        "title": "Warm-up",
+        "time": "5 min",
+        "difficulty": "Low",
+      },
+      {
+        "number": "2",
+        "title": "Main Exercise",
+        "time": "15-20 min",
+        "difficulty": "Moderate",
+      },
+      {
+        "number": "3",
+        "title": "Cool-down",
+        "time": "5 min",
+        "difficulty": "Low",
+      }
+    ];
+
+    // Modify exercises based on specific injuries
+    if (userInfo['injuries'] != null) {
+      List<String> injuries = userInfo['injuries'] ?? [];
+      baseExercises = baseExercises.map((exercise) {
+        if (injuries.contains('Knee') && exercise['title'] == 'Main Exercise') {
+          exercise['title'] = 'Low-Impact Cardio';
+          exercise['time'] = '10 min';
+        }
+        if (injuries.contains('Back') && exercise['title'] == 'Main Exercise') {
+          exercise['title'] = 'Gentle Stretching';
+          exercise['time'] = '15 min';
+        }
+        return exercise;
+      }).toList();
+    }
+
+    return baseExercises;
+  }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+
+    if (isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(color: TColor.primary),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: TColor.primary,
@@ -60,7 +188,7 @@ class _HomeViewState extends State<HomeView> {
               height: 25,
             )),
         title: Text(
-          "Fitness Application",
+          "Personalized Fitness Plan",
           style: TextStyle(
               color: TColor.white, fontSize: 20, fontWeight: FontWeight.w700),
         ),
@@ -68,12 +196,15 @@ class _HomeViewState extends State<HomeView> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Workout Categories Carousel
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15),
               child: SizedBox(
                 width: media.width,
-                height: media.width * 0.4,
-                child: CarouselSlider.builder(
+                height: media.width * 0.2,
+                child: dataArr.isEmpty
+                    ? Center(child: Text("No suitable workout categories", style: TextStyle(color: TColor.secondaryText)))
+                    : CarouselSlider.builder(
                   options: CarouselOptions(
                       autoPlay: false,
                       aspectRatio: 0.5,
@@ -83,12 +214,10 @@ class _HomeViewState extends State<HomeView> {
                       enlargeFactor: 0.4,
                       enlargeStrategy: CenterPageEnlargeStrategy.zoom),
                   itemCount: dataArr.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int index) {
-                    var dObj = dataArr[index] as Map? ?? {};
+                  itemBuilder: (BuildContext context, int itemIndex, int index) {
+                    var dObj = dataArr[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       decoration: BoxDecoration(
                           color: TColor.white,
                           borderRadius: BorderRadius.circular(10),
@@ -125,6 +254,8 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             ),
+
+            // Training Days Carousel
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
               child: SizedBox(
@@ -140,14 +271,11 @@ class _HomeViewState extends State<HomeView> {
                       enlargeFactor: 0.4,
                       enlargeStrategy: CenterPageEnlargeStrategy.zoom),
                   itemCount: trainingDayArr.length,
-                  itemBuilder:
-                      (BuildContext context, int itemIndex, int index) {
-                    var tObj = trainingDayArr[index] as Map? ?? {};
+                  itemBuilder: (BuildContext context, int itemIndex, int index) {
+                    var tObj = trainingDayArr[index];
                     return Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 20),
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                           color: TColor.white,
                           borderRadius: BorderRadius.circular(10),
@@ -167,34 +295,29 @@ class _HomeViewState extends State<HomeView> {
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700),
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
+                          const SizedBox(height: 8),
                           Text(
-                            "week 1",
+                            "Difficulty: ${tObj['difficulty']}",
                             style: TextStyle(
                                 color: TColor.secondaryText.withOpacity(0.8),
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700),
                           ),
                           const Spacer(),
-                          ExercisesRow(
-                              number: "1",
-                              title: "Exercises 1",
-                              time: "7 min",
-                              isActive: true,
-                              onPressed: () {}),
-                          ExercisesRow(
-                              number: "2",
-                              title: "Exercises 2",
-                              time: "15 min",
-                              onPressed: () {}),
-                          ExercisesRow(
-                              number: "3",
-                              title: "Finished",
-                              time: "5 min",
-                              isLast: true,
-                              onPressed: () {}),
+                          ...List.generate(
+                              (tObj['exercises'] as List).length,
+                                  (exerciseIndex) {
+                                var exercise = (tObj['exercises'] as List)[exerciseIndex];
+                                return ExercisesRow(
+                                  number: exercise['number'],
+                                  title: exercise['title'],
+                                  time: exercise['time'],
+                                  isActive: exerciseIndex == 0,
+                                  isLast: exerciseIndex == (tObj['exercises'] as List).length - 1,
+                                  onPressed: () {},
+                                );
+                              }
+                          ),
                           const Spacer(),
                           SizedBox(
                             width: 150,
@@ -207,19 +330,17 @@ class _HomeViewState extends State<HomeView> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const WorkoutView()));
+                                            const WorkoutView()));
                                   } else {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const WorkoutView2()));
+                                            const WorkoutView2()));
                                   }
                                 }),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          )
+                          const SizedBox(height: 20)
                         ],
                       ),
                     );

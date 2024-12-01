@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_fitness/data/services/Preferences.dart';
 import 'package:workout_fitness/view/login/step3_view.dart';
 
 import '../../common/color_extension.dart';
@@ -89,7 +90,8 @@ class _Step2ViewState extends State<Step2View> {
                     const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
                 child: RoundButton(
                   title: "Next",
-                  onPressed: () {
+                  onPressed: () async {
+                    await Preferences.setInjuryStatus(selectIndex);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
