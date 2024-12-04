@@ -61,7 +61,6 @@ class _MenuViewState extends State<MenuView> {
   List menuArr = [
     {"name": "Home", "image": "assets/img/menu_home.png", "tag": "1"},
     {"name": "Meal Plan", "image": "assets/img/menu_meal_plan.png", "tag": "5"},
-    {"name": "Schedule", "image": "assets/img/menu_schedule.png", "tag": "6"},
     {"name": "Exercises", "image": "assets/img/menu_exercises.png", "tag": "8"},
     {"name": "Tips", "image": "assets/img/menu_tips.png", "tag": "9"},
     {"name": "Settings", "image": "assets/img/menu_settings.png", "tag": "10"},
@@ -184,12 +183,6 @@ class _MenuViewState extends State<MenuView> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const MealPlanView2()));
-                    break;
-                  case "6":
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ScheduleView()));
                     break;
                   case "7":
                     Navigator.push(
