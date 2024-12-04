@@ -273,21 +273,16 @@ class _Step3ViewState extends State<Step3View> {
                         injuries: injuries,
                       ).then((success) async {
                         if (success) {
-                          final response = await NetworkService.instance.post(
-                              '/auth/signup',
-                              body: {
-                                'username': userName,
-                                'password': password
-                              }
-                          );
+                          final response = await NetworkService.instance
+                              .post('/auth/signup', body: {
+                            'username': userName,
+                            'password': password
+                          });
                           debugPrint(response.toString());
-                          Preferences.setJwtSecret(
-                            response['access_token']
-                          );
+                          Preferences.setJwtSecret(response['access_token']);
 
-                          final user = await NetworkService.instance.get (
-                              '/users/me'
-                          );
+                          final user =
+                              await NetworkService.instance.get('/users/me');
                           debugPrint(user.toString());
 
                           Navigator.pushAndRemoveUntil(

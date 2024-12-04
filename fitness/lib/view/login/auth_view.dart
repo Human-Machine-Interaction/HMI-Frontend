@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workout_fitness/view/login/login.dart';
 import 'package:workout_fitness/view/login/on_boarding_view.dart';
 
 
@@ -27,7 +28,12 @@ class AuthView extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginView()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(

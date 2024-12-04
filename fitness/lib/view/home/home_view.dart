@@ -45,15 +45,15 @@ class _HomeViewState extends State<HomeView> {
     List<Map<String, dynamic>> categories = [
       {
         "name": "Low Impact",
-        "image": "assets/img/2.png",
+        "image": "assets/img/PelvicTilts.png",
       },
       {
         "name": "Cardio",
-        "image": "assets/img/3.png",
+        "image": "assets/img/SitExercise.png",
       },
       {
         "name": "Strength",
-        "image": "assets/img/5.png",
+        "image": "assets/img/CoreExerciseHeelSlide.png",
       }
     ];
 
