@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:workout_fitness/api/network_service.dart';
 import 'package:workout_fitness/data/services/Preferences.dart';
+import 'package:workout_fitness/view/login/auth_view.dart';
 import 'package:workout_fitness/view/login/on_boarding_view.dart';
 import 'package:workout_fitness/view/menu/menu_view.dart';
 import 'common/color_extension.dart';
@@ -8,6 +10,9 @@ Future<void> main() async {
   try {
     // Đảm bảo Flutter bindings đã được khởi tạo
     WidgetsFlutterBinding.ensureInitialized();
+
+    await NetworkService.instance.initClient();
+    debugPrint(NetworkService.instance.toString());
 
     // Khởi tạo SharedPreferences
     await Preferences.init();
@@ -60,7 +65,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: TColor.primary),
         useMaterial3: false,
       ),
-      home: hasUserData ? const MenuView() : const OnBoardingView(),
+      home: hasUserData ? const MenuView() : const AuthView(),
     );
   }
 }
