@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_fitness/api/network_service.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/round_button.dart';
@@ -22,6 +23,7 @@ class _Step3ViewState extends State<Step3View> {
   String? selectWeight;
   String? selectInjury;
   String? userName;
+  String? password;
   bool isMale = true;
 
   @override
@@ -104,6 +106,20 @@ class _Step3ViewState extends State<Step3View> {
                             });
                           },
                         ),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          // border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: TColor.primary),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            password = value;
+                          });
+                        },
                       ),
                       Divider(color: TColor.divider, height: 1),
                       SelectDateTime(
@@ -255,8 +271,25 @@ class _Step3ViewState extends State<Step3View> {
                         injuryStatus: status ?? (selectInjury != null ? 1 : 0),
                         // 1 if has injury, 0 if no injury
                         injuries: injuries,
-                      ).then((success) {
+                      ).then((success) async {
                         if (success) {
+                          final response = await NetworkService.instance.post(
+                              '/auth/signup',
+                              body: {
+                                'username': userName,
+                                'password': password
+                              }
+                          );
+                          debugPrint(response.toString());
+                          Preferences.setJwtSecret(
+                            response['access_token']
+                          );
+
+                          final user = await NetworkService.instance.get (
+                              '/users/me'
+                          );
+                          debugPrint(user.toString());
+
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -272,6 +305,7 @@ class _Step3ViewState extends State<Step3View> {
                           );
                         }
                       }).catchError((error) {
+                        debugPrint(error.toString());
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('An error occurred: $error')),
                         );

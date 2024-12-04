@@ -13,6 +13,8 @@ class Preferences {
   static const String keyGender = 'gender';
   static const String keyInjuryStatus = 'injuryStatus';
   static const String keyInjuries = 'injuries';
+  static const String jwtSecret = '';
+  static const String userId = '';
 
   static Future<void> init() async {
     _preferences ??= await SharedPreferences.getInstance();
@@ -157,6 +159,44 @@ class Preferences {
       return _preferences?.getStringList(keyInjuries);
     } catch (e) {
       print("Error getting injuries: $e");
+      return null;
+    }
+  }
+
+  static Future<bool> setJwtSecret(String jwt) async {
+    try {
+      if (_preferences == null) await init();
+      return await _preferences?.setString(jwtSecret, jwt) ?? false;
+    } catch (e) {
+      print("Error saving jwt: $e");
+      return false;
+    }
+  }
+
+  static String? getJwtSecret() {
+    try {
+      return _preferences?.getString(jwtSecret);
+    } catch (e) {
+      print("Error getting jwt: $e");
+      return null;
+    }
+  }
+
+  static Future<bool> setUserId(String _id) async {
+    try {
+      if (_preferences == null) await init();
+      return await _preferences?.setString(userId, _id) ?? false;
+    } catch (e) {
+      print("Error saving jwt: $e");
+      return false;
+    }
+  }
+
+  static String? getUserid() {
+    try {
+      return _preferences?.getString(userId);
+    } catch (e) {
+      print("Error getting jwt: $e");
       return null;
     }
   }
