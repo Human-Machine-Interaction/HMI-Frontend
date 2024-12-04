@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_fitness/common_widget/round_button.dart';
 import 'package:workout_fitness/data/services/Preferences.dart';
+import 'package:workout_fitness/view/exercise/exercise_view_2.dart';
 
 import '../../common/color_extension.dart';
 import '../../common_widget/exercises_row.dart';
@@ -330,13 +331,13 @@ class _HomeViewState extends State<HomeView> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                            const WorkoutView()));
+                                            const ExerciseView2()));
                                   } else {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                            const WorkoutView2()));
+                                            const ExerciseView2()));
                                   }
                                 }),
                           ),
