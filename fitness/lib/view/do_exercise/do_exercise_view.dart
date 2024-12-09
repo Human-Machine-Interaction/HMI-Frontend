@@ -41,6 +41,7 @@ class _DoExerciseViewState extends State<DoExerciseView> {
     poseDetector.close();
     controller?.stopImageStream();
     controller?.dispose();
+    widget.exercise.reset();
     super.dispose();
   }
 
@@ -70,7 +71,7 @@ class _DoExerciseViewState extends State<DoExerciseView> {
               )
           ),
           Positioned(
-            bottom: 50,
+            bottom: 10,
             left: 20,
             right: 20,
             child: Container(
