@@ -14,7 +14,7 @@ class Exercise {
   Exercise({
     required this.name,
     required this.requiredReps,
-    required this.actions,
+    required this.actions
   });
 
   String? checkProgress(Pose pose) {
@@ -41,4 +41,10 @@ class Exercise {
 
   bool get isCompleted => _completedReps >= requiredReps;
   int get currentReps => _completedReps;
+
+  void reset() {
+    _completedReps = 0;
+    _currentActionIndex = 0;
+    _holdStartTime = null;
+  }
 }

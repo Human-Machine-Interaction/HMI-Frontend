@@ -3,7 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:workout_fitness/view/do_exercise/do_exercise_view.dart';
 import '../../common/color_extension.dart';
-import 'package:workout_fitness/mediapipe/exercise_example.dart';
+import 'package:workout_fitness/mediapipe/exercise_data.dart';
 
 
 class WorkoutDetailView extends StatefulWidget {
@@ -194,7 +194,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DoExerciseView(exercise: squat),
+                      builder: (context) => DoExerciseView(exercise: getExercise(widget.workoutData['name'])),
                     ),
                   );
                 },
