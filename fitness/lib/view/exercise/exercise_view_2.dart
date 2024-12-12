@@ -87,6 +87,7 @@ class _ExerciseView2State extends State<ExerciseView2> {
     // Initialize recommended workouts list
     List recommendations = [];
 
+    print(Preferences.getJwtSecret());
     // In chi tiết thông tin để kiểm tra
     print("Injury Status: $injuryStatus");
     print("Injuries: $injuries");
@@ -243,7 +244,7 @@ class _ExerciseView2State extends State<ExerciseView2> {
                               alignment: Alignment.center,
                               children: [
                                 Image.asset(
-                                  wObj["image"].toString(),
+                                  wObj["imageUrl"].toString(),
                                   width: media.width,
                                   height: media.width * 0.45,
                                   fit: BoxFit.cover,

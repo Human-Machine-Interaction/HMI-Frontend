@@ -17,7 +17,7 @@ class NetworkService {
   Future<void> initClient({String? token}) async {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://10.10.85.171:3000',
+        baseUrl: 'http://192.168.40.222:3000',
         headers: {
           if (token != null) 'Authorization': 'Bearer $token',
         },

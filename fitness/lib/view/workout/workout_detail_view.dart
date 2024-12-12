@@ -17,10 +17,9 @@ class WorkoutDetailView extends StatefulWidget {
 
 class _WorkoutDetailViewState extends State<WorkoutDetailView> {
   List workArr = [
-    {"image": "assets/img/1.png"},
-    {"image": "assets/img/2.png"},
-    {"image": "assets/img/5.png"},
-    {"image": "assets/img/3.png"},
+    {"image": "assets/img/on_board_1.png"},
+    {"image": "assets/img/on_board_2.png"},
+    {"image": "assets/img/on_board_3.png"},
   ];
 
   late VideoPlayerController _videoPlayerController;
@@ -35,7 +34,7 @@ class _WorkoutDetailViewState extends State<WorkoutDetailView> {
 
   Future<void> _initializeVideo() async {
     _videoPlayerController = VideoPlayerController.asset(
-      widget.workoutData['video'],
+      widget.workoutData['videoUrl'],
     );
 
     await _videoPlayerController.initialize();

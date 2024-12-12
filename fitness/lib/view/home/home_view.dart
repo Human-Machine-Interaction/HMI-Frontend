@@ -22,6 +22,8 @@ class _HomeViewState extends State<HomeView> {
   Map<String, dynamic> userInfo = {};
   bool isLoading = true;
 
+  Map<String, List<bool>> completedExercises = {};
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +38,24 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       dataArr = _generateWorkoutCategories();
       trainingDayArr = _generateTrainingDays();
+      _loadCompletedExercises();
       isLoading = false;
+    });
+  }
+
+  void _loadCompletedExercises() {
+    // Initialize completedExercises for each workout
+    for (var workout in trainingDayArr) {
+      completedExercises[workout['name']] = List.generate(
+          workout['exercises'].length,
+              (index) => workout['exercises'][index]['isCompleted'] ?? false
+      );
+    }
+  }
+
+  void _saveExerciseCompletion(String workoutName, int exerciseIndex) {
+    setState(() {
+      completedExercises[workoutName]![exerciseIndex] = true;
     });
   }
 
@@ -128,18 +147,21 @@ class _HomeViewState extends State<HomeView> {
         "title": "Warm-up",
         "time": "5 min",
         "difficulty": "Low",
+        "isCompleted": false
       },
       {
         "number": "2",
         "title": "Main Exercise",
         "time": "15-20 min",
         "difficulty": "Moderate",
+        "isCompleted": false
       },
       {
         "number": "3",
         "title": "Cool-down",
         "time": "5 min",
         "difficulty": "Low",
+        "isCompleted": false
       }
     ];
 
@@ -162,9 +184,36 @@ class _HomeViewState extends State<HomeView> {
     return baseExercises;
   }
 
+  void _markFirstExerciseCompleted(String workoutName, String exerciseTitle) {
+    // Add the completed exercise to SharedPreferences
+    Preferences.addCompletedExercise(exerciseTitle);
+
+    // Update the UI to reflect the completed exercise
+    setState(() {
+      for (var workout in trainingDayArr) {
+        if (workout['name'] == workoutName) {
+          for (int i = 0; i < workout['exercises'].length; i++) {
+            var exercise = workout['exercises'][i];
+            if (exercise['title'] == exerciseTitle) {
+              exercise['isCompleted'] = true;
+              completedExercises[workoutName]![i] = true;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+
+    // Ensure completedExercises is initialized before using
+    if (completedExercises.isEmpty) {
+      _loadCompletedExercises();
+    }
 
     if (isLoading) {
       return Scaffold(
@@ -313,12 +362,13 @@ class _HomeViewState extends State<HomeView> {
                                   number: exercise['number'],
                                   title: exercise['title'],
                                   time: exercise['time'],
-                                  isActive: exerciseIndex == 0,
+                                  isActive: exerciseIndex == 0 &&
+                                      !completedExercises[tObj['name']]![exerciseIndex],
+                                  isCompleted: completedExercises[tObj['name']]![exerciseIndex],
                                   isLast: exerciseIndex == (tObj['exercises'] as List).length - 1,
                                   onPressed: () {},
                                 );
-                              }
-                          ),
+                              }),
                           const Spacer(),
                           SizedBox(
                             width: 150,
@@ -326,20 +376,17 @@ class _HomeViewState extends State<HomeView> {
                             child: RoundButton(
                                 title: "Start",
                                 onPressed: () {
-                                  if (index % 2 == 0) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                            const ExerciseView2()));
-                                  } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                            const ExerciseView2()));
-                                  }
-                                }),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ExerciseView2(),
+                                    ),
+                                  ).then((_) {
+                                    // When returning from ExerciseView2, mark the first exercise as completed
+                                    _markFirstExerciseCompleted(tObj['name'], tObj['exercises'][0]['title']);
+                                  });
+                                }
+                            ),
                           ),
                           const SizedBox(height: 20)
                         ],

@@ -15,6 +15,7 @@ class Preferences {
   static const String keyInjuries = 'injuries';
   static const String jwtSecret = '';
   static const String userId = '';
+  static const String keyCompletedExercises = 'completedExercises';
 
   static Future<void> init() async {
     _preferences ??= await SharedPreferences.getInstance();
@@ -266,6 +267,47 @@ class Preferences {
       return await _preferences?.clear() ?? false;
     } catch (e) {
       print("Error clearing preferences: $e");
+      return false;
+    }
+  }
+
+  static Future<bool> saveCompletedExercises(List<String> completedExercises) async {
+    try {
+      if (_preferences == null) await init();
+      return await _preferences?.setStringList(keyCompletedExercises, completedExercises) ?? false;
+    } catch (e) {
+      print("Error saving completed exercises: $e");
+      return false;
+    }
+  }
+
+  // Method to get completed exercises
+  static List<String>? getCompletedExercises() {
+    try {
+      return _preferences?.getStringList(keyCompletedExercises);
+    } catch (e) {
+      print("Error getting completed exercises: $e");
+      return null;
+    }
+  }
+
+  // Method to add a single completed exercise
+  static Future<bool> addCompletedExercise(String exerciseName) async {
+    try {
+      if (_preferences == null) await init();
+
+      // Get existing completed exercises
+      List<String> completedExercises = getCompletedExercises() ?? [];
+
+      // Add new exercise if not already completed
+      if (!completedExercises.contains(exerciseName)) {
+        completedExercises.add(exerciseName);
+      }
+
+      // Save updated list
+      return await _preferences?.setStringList(keyCompletedExercises, completedExercises) ?? false;
+    } catch (e) {
+      print("Error adding completed exercise: $e");
       return false;
     }
   }

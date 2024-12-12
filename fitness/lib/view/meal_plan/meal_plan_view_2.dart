@@ -175,39 +175,39 @@ class _MealPlanView2State extends State<MealPlanView2> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: Image.asset(
-                  "assets/img/black_fo.png",
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  "Sunday, AUG 26",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: TColor.secondaryText,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: Image.asset(
-                  "assets/img/next_go.png",
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        //   child: Row(
+        //     children: [
+        //       IconButton(
+        //         onPressed: () {},
+        //         icon: Image.asset(
+        //           "assets/img/black_fo.png",
+        //           width: 20,
+        //           height: 20,
+        //         ),
+        //       ),
+        //       Expanded(
+        //         child: Text(
+        //           "Sunday, AUG 26",
+        //           textAlign: TextAlign.center,
+        //           style: TextStyle(
+        //               color: TColor.secondaryText,
+        //               fontSize: 20,
+        //               fontWeight: FontWeight.w700),
+        //         ),
+        //       ),
+        //       IconButton(
+        //         onPressed: () {},
+        //         icon: Image.asset(
+        //           "assets/img/next_go.png",
+        //           width: 20,
+        //           height: 20,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
 
         Expanded(
           child: ListView.builder(

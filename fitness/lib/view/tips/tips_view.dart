@@ -14,15 +14,15 @@ class TipsView extends StatefulWidget {
 
 class _TipsViewState extends State<TipsView> {
   List tipsArr = [
-    {"name": "About Traning"},
-    {"name": "How to weight loss ?"},
-    {"name": "Introducing about meal plan "},
-    {"name": "Water and Food"},
-    {"name": "Drink water"},
-    {"name": "How many times a day to eat"},
-    {"name": "Become stronger"},
-    {"name": "Shoes To Training"},
-    {"name": "Appeal Tips"}
+    {"name": "Understanding Your Journey"},
+    {"name": "Coping Strategies Emotional Wellness"},
+    {"name": "Creating a Personalized Support Plan"},
+    {"name": "Mindfulness and Self-Care Techniques"},
+    {"name": "Managing Stress and Anxiety"},
+    {"name": "Establishing Healthy Daily Routines"},
+    {"name": "Building Emotional Resilience"},
+    {"name": "Resources and Support Networks"},
+    {"name": "Self-Compassion and Healing Tips"}
   ];
 
   @override

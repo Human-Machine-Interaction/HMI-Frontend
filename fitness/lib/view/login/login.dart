@@ -63,9 +63,9 @@ class _LoginViewState extends State<LoginView> {
       // Fetch user details
       final user = await NetworkService.instance.get('/users/me');
 
-      print(user["id"]);
-
       await Preferences.setUserId(user["id"]);
+
+      await Preferences.setUsername(username);
 
       // Navigate to next screen or perform post-login actions
       Navigator.of(context).pushReplacement(

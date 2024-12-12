@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Api {
-  static String baseUrl = "http://192.168.40.222:5000/api/";
+  static String baseUrl = "http://192.168.40.222:3000";
 
   Future<Map<String, dynamic>?> postData(String path, Map data) async {
     final Uri uri = Uri.parse(baseUrl + path);

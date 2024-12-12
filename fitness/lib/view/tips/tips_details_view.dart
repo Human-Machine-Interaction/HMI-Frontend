@@ -29,7 +29,7 @@ class _TipsDetailViewState extends State<TipsDetailView> {
               height: 25,
             )),
         title: Text(
-          "Tips",
+          "Wellness Tips",
           style: TextStyle(
               color: TColor.white, fontSize: 20, fontWeight: FontWeight.w700),
         ),
@@ -39,7 +39,7 @@ class _TipsDetailViewState extends State<TipsDetailView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
-              "assets/img/1.png",
+              "assets/img/on_board_1.png",
               width: media.width,
               height: media.width * 0.55,
               fit: BoxFit.cover,
@@ -63,11 +63,11 @@ class _TipsDetailViewState extends State<TipsDetailView> {
               ),
             ),
 
-            
+
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
               child: Text(
-                "Drink water",
+                "Mindful Self-Care",
                 style: TextStyle(
                     color: TColor.secondaryText,
                     fontSize: 18,
@@ -77,14 +77,14 @@ class _TipsDetailViewState extends State<TipsDetailView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Lore ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.m ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget lorem dolor sed viverra ipsum nunc aliquet. Hendrerit ",
+                "Self-care is a crucial component of mental health and emotional well-being. It's about creating intentional moments of compassion and nurturing for yourself. Remember that taking care of your mental health is not selfish—it's necessary.\n\nStart by identifying small, manageable ways to be kind to yourself daily. This might include setting boundaries, practicing meditation, journaling, or simply taking a few moments to breathe deeply and center yourself.",
                 style: TextStyle(color: TColor.secondaryText, fontSize: 16),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
               child: Text(
-                "Calories",
+                "Emotional Resilience",
                 style: TextStyle(
                     color: TColor.secondaryText,
                     fontSize: 18,
@@ -94,7 +94,7 @@ class _TipsDetailViewState extends State<TipsDetailView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                "Lore ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.m ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget lorem dolor sed viverra ipsum nunc aliquet. Hendrerit ",
+                "Building emotional resilience is about developing the strength to navigate life's challenges. It's not about avoiding difficult emotions, but learning to process them in healthy ways. Techniques like cognitive reframing, practicing gratitude, and maintaining a support network can help you develop greater emotional flexibility.\n\nRemember that healing is not linear. Some days will be harder than others, and that's okay. Be patient and compassionate with yourself throughout your journey.",
                 style: TextStyle(color: TColor.secondaryText, fontSize: 16),
               ),
             ),
@@ -131,7 +131,7 @@ class _TipsDetailViewState extends State<TipsDetailView> {
               InkWell(
                 onTap: () {},
                 child:
-                    Image.asset("assets/img/more.png", width: 25, height: 25),
+                Image.asset("assets/img/more.png", width: 25, height: 25),
               ),
             ],
           ),

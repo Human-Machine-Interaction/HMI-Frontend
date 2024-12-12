@@ -31,16 +31,11 @@ Future<void> main() async {
 // Hàm kiểm tra dữ liệu user
 Future<bool> checkUserData() async {
   try {
-    final userInfo = Preferences.getUserInfo();
+    final userInfo = Preferences.getUserid();
+
+
     // Kiểm tra xem có đầy đủ thông tin cần thiết không
-    return userInfo['username'] != null &&
-        userInfo['username'].toString().isNotEmpty &&
-        userInfo['birthday'] != null &&
-        userInfo['height'] != null &&
-        userInfo['height'] != 0.0 &&
-        userInfo['weight'] != null &&
-        userInfo['weight'] != 0.0 &&
-        userInfo['gender'] != null;
+    return userInfo != null;
   } catch (e) {
     print("Error checking user data: $e");
     return false;
